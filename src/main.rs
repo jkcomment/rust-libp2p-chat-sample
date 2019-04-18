@@ -1,6 +1,3 @@
-extern crate futures;
-extern crate libp2p;
-
 use futures::prelude::*;
 use libp2p::{
     PeerId,
@@ -27,12 +24,12 @@ fn main() {
 
     // floodsubとmDNSを組み合わせたcustom network behaviour
     #[derive(NetworkBehaviour)]
-    struct MyBehaviour<Tsubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> {
-        floodsub: libp2p::floodsub::Floodsub<Tsubstream>,
-        mdns: libp2p::mdns::Mdns<Tsubstream>,
+    struct MyBehaviour<TSubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> {
+        floodsub: libp2p::floodsub::Floodsub<TSubstream>,
+        mdns: libp2p::mdns::Mdns<TSubstream>,
     }
 
-    impl<Tsubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> libp2p::core::swarm::NetworkBehaviourEventProcess<libp2p::mdns::MdnsEvent> for MyBehaviour<Tsubstream> {
+    impl<TSubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> libp2p::core::swarm::NetworkBehaviourEventProcess<libp2p::mdns::MdnsEvent> for MyBehaviour<TSubstream> {
         fn inject_event(&mut self, event: libp2p::mdns::MdnsEvent) {
             match event {
                 libp2p::mdns::MdnsEvent::Discovered(list) => {
@@ -51,7 +48,8 @@ fn main() {
         }
     }
 
-    impl<Tsubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> libp2p::core::swarm::NetworkBehaviourEventProcess<libp2p::floodsub::FloodsubEvent> for MyBehaviour<Tsubstream> {
+    impl<TSubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> libp2p::core::swarm::NetworkBehaviourEventProcess<libp2p::floodsub::FloodsubEvent> for MyBehaviour<TSubstream> {
+        // floodsubがイベントを生成した時に呼び出される
         fn inject_event(&mut self, message: libp2p::floodsub::FloodsubEvent) {
             if let libp2p::floodsub::FloodsubEvent::Message(message) = message {
                 println!("Received: '{:?}' from {:?}", String::from_utf8_lossy(&message.data), message.source);
