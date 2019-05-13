@@ -21,7 +21,6 @@ fn main() {
     // Floodsub topic生成
     let floodsub_topic = libp2p::floodsub::TopicBuilder::new("chat").build();
 
-
     // floodsubとmDNSを組み合わせたcustom network behaviour
     #[derive(NetworkBehaviour)]
     struct MyBehaviour<TSubstream: libp2p::tokio_io::AsyncRead + libp2p::tokio_io::AsyncWrite> {
