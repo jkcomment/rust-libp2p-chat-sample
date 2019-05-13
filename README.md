@@ -17,7 +17,7 @@ instance and start the second with this address as the first argument. In the fi
 window, run:
 
 ```sh
-cargo run --example chat
+cargo run chat
 ```
 
 It will print the PeerId and the listening address, e.g. `Listening on
@@ -26,7 +26,7 @@ It will print the PeerId and the listening address, e.g. `Listening on
 In the second terminal window, start a new instance of the example with:
 
 ```sh
-cargo run --example chat -- /ip4/127.0.0.1/tcp/24915
+cargo run chat /ip4/127.0.0.1/tcp/24915
 ```
 
 The two nodes then connect.
